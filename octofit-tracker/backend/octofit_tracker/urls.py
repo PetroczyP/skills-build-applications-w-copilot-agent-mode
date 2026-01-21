@@ -16,14 +16,29 @@ Including another URLconf
 import os
 from django.contrib import admin
 from django.urls import include, path
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
-from octofit_tracker.views import api_root, router
+from octofit_tracker.views import router
 
 codespace_name = os.environ.get('CODESPACE_NAME')
 if codespace_name:
     base_url = f"https://{codespace_name}-8000.app.github.dev"
 else:
     base_url = "http://localhost:8000"
+
+
+@api_view(["GET"])
+def api_root(request):
+    return Response(
+        {
+            "users": f"{base_url}/api/users/",
+            "teams": f"{base_url}/api/teams/",
+            "activities": f"{base_url}/api/activities/",
+            "leaderboard": f"{base_url}/api/leaderboard/",
+            "workouts": f"{base_url}/api/workouts/",
+        }
+    )
 
 urlpatterns = [
     path('', api_root, name='api-root-home'),
